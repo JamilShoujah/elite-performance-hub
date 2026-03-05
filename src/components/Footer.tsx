@@ -7,9 +7,9 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           <div>
             <span className="font-display text-xl font-bold text-secondary-foreground">
-              AHMED<span className="text-primary">.</span>SAAD
+              AHMAD<span className="text-primary">.</span>SAAD
             </span>
-            <p className="text-secondary-foreground/50 text-xs mt-1">Elite Performance Coach</p>
+            <p className="text-secondary-foreground/50 text-xs mt-1">Performance Coach</p>
           </div>
 
           <div className="flex items-center gap-4">
@@ -17,7 +17,7 @@ const Footer = () => {
               { icon: Instagram, href: "#" },
               { icon: Facebook, href: "#" },
               { icon: MessageCircle, href: "https://wa.me/1234567890" },
-              { icon: Mail, href: "mailto:contact@ahmedsaad.com" },
+              { icon: Mail, href: "mailto:contact@ahmadsaad.com" },
             ].map((social, i) => (
               <a
                 key={i}
@@ -41,7 +41,7 @@ const Footer = () => {
 
         <div className="mt-8 pt-8 border-t border-secondary-foreground/10 text-center">
           <p className="text-xs text-secondary-foreground/30">
-            © {new Date().getFullYear()} Ahmed Saad. All rights reserved.
+            © {new Date().getFullYear()} Ahmad Saad. All rights reserved.
           </p>
         </div>
       </div>

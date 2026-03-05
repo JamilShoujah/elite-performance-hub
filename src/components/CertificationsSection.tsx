@@ -6,6 +6,7 @@ const certs = [
   "Post Rehab Trainer Certificate — SAS",
   "Beyond the Game: Sports Health & Performance — Lebanese Order of Physicians, Beirut",
   "Building Elite Athletes Workshop — NCSF Middle East",
+
   "E-Sports High Performance Training — NCSF Middle East",
 ];
 
