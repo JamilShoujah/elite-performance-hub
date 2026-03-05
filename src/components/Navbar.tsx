@@ -20,7 +20,7 @@ const Navbar = () => {
       }`}
     >
       <div className="container mx-auto flex items-center justify-between py-4 px-6">
-        <a href="#" className="font-display text-xl font-bold tracking-tight text-foreground">
+        <a href="#" className="font-display text-xl font-bold tracking-tight text-white">
           AHMED<span className="text-primary">.</span>SAAD
         </a>
         <div className="hidden md:flex items-center gap-8">
@@ -28,24 +28,18 @@ const Navbar = () => {
             <a
               key={item}
               href={`#${item.toLowerCase()}`}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className={`text-sm font-medium transition-colors ${scrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
             >
               {item}
             </a>
           ))}
           <a
             href="/exercises"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className={`text-sm font-medium transition-colors ${scrolled ? "text-muted-foreground hover:text-foreground" : "text-white/70 hover:text-white"}`}
           >
             Exercise Library
           </a>
         </div>
-        <a
-          href="#contact"
-          className="bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold rounded-sm hover:opacity-90 transition-opacity"
-        >
-          Apply Now
-        </a>
       </div>
     </motion.nav>
   );
