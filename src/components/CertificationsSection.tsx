@@ -2,12 +2,11 @@ import { motion } from "framer-motion";
 import { Award } from "lucide-react";
 
 const certs = [
-  "NASM Certified Personal Trainer",
-  "Precision Nutrition Level 1",
-  "Functional Movement Screen (FMS)",
-  "Hyrox Race Coach Certified",
-  "Corrective Exercise Specialist",
-  "Sports Performance Enhancement",
+  "Personal Trainer Certificate — SAS (Sports School Academy)",
+  "Post Rehab Trainer Certificate — SAS",
+  "Beyond the Game: Sports Health & Performance — Lebanese Order of Physicians, Beirut",
+  "Building Elite Athletes Workshop — NCSF Middle East",
+  "E-Sports High Performance Training — NCSF Middle East",
 ];
 
 const CertificationsSection = () => {

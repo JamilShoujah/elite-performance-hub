@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import { Star } from "lucide-react";
-import { useState } from "react";
+import { Star, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
 
 const reviews = [
   {
@@ -33,6 +33,19 @@ const reviews = [
 const ReviewsSection = () => {
   const [active, setActive] = useState(0);
 
+  const scrollNext = useCallback(() => {
+    setActive((prev) => (prev + 1) % reviews.length);
+  }, []);
+
+  const scrollPrev = useCallback(() => {
+    setActive((prev) => (prev - 1 + reviews.length) % reviews.length);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(scrollNext, 5000);
+    return () => clearInterval(interval);
+  }, [scrollNext]);
+
   return (
     <section id="reviews" className="py-24 bg-muted">
       <div className="container mx-auto px-6">
@@ -47,7 +60,21 @@ const ReviewsSection = () => {
           </h2>
         </motion.div>
 
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-3xl mx-auto relative">
+          <button
+            onClick={scrollPrev}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 md:-translate-x-14 z-10 w-10 h-10 rounded-full border border-border bg-card flex items-center justify-center hover:border-primary/40 transition-colors"
+          >
+            <ChevronLeft className="w-5 h-5 text-foreground" />
+          </button>
+
+          <button
+            onClick={scrollNext}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 md:translate-x-14 z-10 w-10 h-10 rounded-full border border-border bg-card flex items-center justify-center hover:border-primary/40 transition-colors"
+          >
+            <ChevronRight className="w-5 h-5 text-foreground" />
+          </button>
+
           <motion.div
             key={active}
             initial={{ opacity: 0, y: 10 }}
