@@ -22,7 +22,7 @@ const AboutSection = () => {
               />
             </div>
             <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground p-6 rounded-sm">
-              <div className="font-display text-3xl font-bold">10+</div>
+              <div className="font-display text-3xl font-bold">6+</div>
               <div className="text-xs uppercase tracking-widest">Years Coaching</div>
             </div>
           </motion.div>
