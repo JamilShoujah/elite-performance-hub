@@ -17,12 +17,12 @@ const AboutSection = () => {
             <div className="aspect-[3/4] overflow-hidden rounded-sm">
               <img
                 src={ahmedPortrait}
-                alt="Ahmed Saad - Elite Performance Coach"
+                alt="Ahmad Saad - Performance Coach"
                 className="w-full h-full object-cover"
               />
             </div>
             <div className="absolute -bottom-6 -right-6 bg-primary text-primary-foreground p-6 rounded-sm">
-              <div className="font-display text-3xl font-bold">10+</div>
+              <div className="font-display text-3xl font-bold">6+</div>
               <div className="text-xs uppercase tracking-widest">Years Coaching</div>
             </div>
           </motion.div>
@@ -39,19 +39,19 @@ const AboutSection = () => {
             </h2>
 
             <p className="mt-6 text-muted-foreground leading-relaxed">
-              With over a decade of experience training professional athletes, executives, and
-              high-performing individuals, Ahmed Saad delivers structured, performance-first
+              With over 6 years of experience training everyday fitness enthusiasts, busy professionals,
+              and competitive athletes alike, Ahmad Saad delivers structured, results-driven
               coaching with zero shortcuts. Every program is built on science, refined through
-              practice, and designed for lasting transformation.
+              practice, and designed for lasting transformation — no matter your starting point.
             </p>
 
             <div className="mt-8 space-y-4">
               {[
-                "Experience training professional athletes and executives",
+                "Training for all levels — beginners to competitive athletes",
                 "Structured, periodized training philosophy",
-                "Performance-first mindset with measurable outcomes",
+                "Results-driven mindset with measurable outcomes",
                 "No shortcuts — only proven systems",
-                "High standards for every client accepted",
+                "Personalized approach for every individual",
               ].map((point) => (
                 <div key={point} className="flex items-start gap-3">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary mt-2 shrink-0" />
@@ -62,9 +62,9 @@ const AboutSection = () => {
 
             <div className="mt-10 flex flex-wrap gap-6">
               {[
-                { icon: Award, label: "NASM Certified" },
-                { icon: Clock, label: "10+ Years" },
-                { icon: Users, label: "500+ Athletes" },
+                { icon: Award, label: "Certified Trainer" },
+                { icon: Clock, label: "6+ Years" },
+                { icon: Users, label: "200+ Trainees" },
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-2 text-sm text-muted-foreground">
                   <item.icon className="w-4 h-4 text-primary" />

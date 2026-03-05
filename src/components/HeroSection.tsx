@@ -31,7 +31,7 @@ const HeroSection = () => {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-6 text-lg md:text-xl text-secondary-foreground/70 max-w-2xl mx-auto font-light"
         >
-          Elite performance coaching for professionals, athletes, and high-achievers.
+          Performance coaching for everyone — from beginners to competitive athletes.
         </motion.p>
 
         <motion.div
@@ -62,7 +62,7 @@ const HeroSection = () => {
         >
           <div className="flex items-center gap-2">
             <Shield className="w-4 h-4 text-primary" />
-            <span>Trusted by Athletes</span>
+            <span>Trusted by 200+ Clients</span>
           </div>
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-primary" />

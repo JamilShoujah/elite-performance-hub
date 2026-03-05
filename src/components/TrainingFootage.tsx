@@ -14,7 +14,7 @@ const TrainingFootage = () => {
             Inside the Process.
           </h2>
           <p className="mt-4 text-muted-foreground max-w-xl mx-auto">
-            A glimpse into elite coaching sessions and athlete training.
+            A glimpse into real coaching sessions and client training.
           </p>
         </motion.div>
 

@@ -5,27 +5,27 @@ import { useState, useEffect, useCallback } from "react";
 const reviews = [
   {
     name: "Omar K.",
-    text: "Ahmed's coaching transformed my athletic performance in 3 months. His structured approach is unlike anything I've experienced.",
+    text: "Ahmad's coaching transformed my fitness in 3 months. His structured approach is unlike anything I've experienced.",
     rating: 5,
   },
   {
     name: "Sarah M.",
-    text: "I came in overworked and undertrained. Ahmed built a system that fit my schedule and pushed me to results I didn't think were possible.",
+    text: "I came in overworked and undertrained. Ahmad built a system that fit my schedule and pushed me to results I didn't think were possible.",
     rating: 5,
   },
   {
     name: "Youssef A.",
-    text: "As a Hyrox competitor, I needed specialized training. Ahmed's programming took 8 minutes off my race time in one season.",
+    text: "As a Hyrox competitor, I needed specialized training. Ahmad's programming took 8 minutes off my race time in one season.",
     rating: 5,
   },
   {
     name: "Layla H.",
-    text: "Professional, disciplined, results-driven. Ahmed doesn't waste your time — every session has purpose. Best investment in myself.",
+    text: "Professional, disciplined, results-driven. Ahmad doesn't waste your time — every session has purpose. Best investment in myself.",
     rating: 5,
   },
   {
     name: "Khaled R.",
-    text: "I've worked with many trainers. Ahmed is the only one who treated my goals like his own. Genuine, focused, and effective.",
+    text: "I've worked with many trainers. Ahmad is the only one who treated my goals like his own. Genuine, focused, and effective.",
     rating: 5,
   },
 ];
