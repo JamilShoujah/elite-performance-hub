@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { type ReactNode, useEffect, useId } from "react";
 
+import { ExerciseMedia } from "./ExerciseMedia";
 import type { Exercise } from "../types";
 
 interface ExerciseDetailsModalProps {
@@ -148,11 +149,9 @@ export function ExerciseDetailsModal({
             <div className="lg:grid lg:grid-cols-[auto,minmax(0,1fr)] lg:items-center lg:gap-8">
               <div className="flex justify-center lg:justify-start">
                 <div className="inline-flex max-w-full items-center justify-center rounded-sm border border-border/70 bg-muted/15 p-2 sm:p-3 lg:max-w-[360px]">
-                  <img
+                  <ExerciseMedia
                     src={exercise.gifUrl}
                     alt={`${exercise.name} demonstration`}
-                    className="block h-auto w-auto max-h-[52vh] max-w-full object-contain sm:max-h-[58vh] lg:max-h-[44vh] xl:max-h-[48vh]"
-                    style={{ imageRendering: "auto" }}
                   />
                 </div>
               </div>
