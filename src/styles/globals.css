@@ -1,0 +1,89 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 0 0% 0%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 0%;
+
+    --primary: 151 100% 50%;
+    --primary-foreground: 0 0% 0%;
+
+    --secondary: 0 0% 27%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 93%;
+    --muted-foreground: 0 0% 27%;
+
+    --accent: 151 100% 50%;
+    --accent-foreground: 0 0% 0%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 151 100% 50%;
+
+    --radius: 0.5rem;
+
+    --font-display: "Space Grotesk", sans-serif;
+    --font-body: "Space Grotesk", sans-serif;
+
+    --shadow-card: 0 2px 20px -4px hsla(0, 0%, 0%, 0.06);
+    --shadow-card-hover: 0 8px 30px -4px hsla(0, 0%, 0%, 0.12);
+    --shadow-elevated: 0 20px 60px -10px hsla(0, 0%, 0%, 0.1);
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+  }
+
+  #root {
+    min-height: 100vh;
+  }
+}
+
+@layer utilities {
+  .text-gradient-green {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      hsl(151, 100%, 50%),
+      hsl(160, 100%, 40%)
+    );
+  }
+
+  .glow-green {
+    box-shadow:
+      0 0 20px hsla(151, 100%, 50%, 0.3),
+      0 0 60px hsla(151, 100%, 50%, 0.1);
+  }
+}
