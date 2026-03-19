@@ -1,23 +1,56 @@
-export const exerciseCategories = [
-  "Upper Body",
-  "Lower Body",
-  "Core",
-  "Mobility",
-  "Conditioning",
-  "Full Body",
-] as const;
-
-export const exerciseCategoryFilters = ["All", ...exerciseCategories] as const;
-
-export type ExerciseCategory = (typeof exerciseCategories)[number];
-export type ExerciseCategoryFilter = (typeof exerciseCategoryFilters)[number];
+export const ALL_EXERCISES_CATEGORY = "All";
+export const BODY_WEIGHT_EQUIPMENT = "body weight";
+export const EXERCISE_PAGE_SIZE = 24;
 
 export interface Exercise {
-  category: ExerciseCategory;
-  commonMistakes: string[];
-  demoUrl: string;
-  description: string;
+  bodyParts: string[];
+  category: string;
+  equipment: string[];
+  gifUrl: string;
+  id: string;
+  instructions: string[];
   name: string;
-  primaryMuscles: string;
-  tips: string[];
+  primaryMuscles: string[];
+  secondaryMuscles: string[];
+}
+
+export interface ExerciseCategoryOption {
+  label: string;
+  value: string;
+}
+
+export interface ExerciseApiItem {
+  bodyParts: string[];
+  equipments: string[];
+  exerciseId: string;
+  gifUrl: string;
+  instructions: string[];
+  name: string;
+  secondaryMuscles: string[];
+  targetMuscles: string[];
+}
+
+interface ExerciseApiMetadata {
+  currentPage: number;
+  nextPage: string | null;
+  previousPage: string | null;
+  totalExercises: number;
+  totalPages: number;
+}
+
+export interface ExerciseApiListResponse {
+  data: ExerciseApiItem[];
+  metadata?: ExerciseApiMetadata;
+  success: boolean;
+}
+
+export interface ExerciseTaxonomyResponse {
+  data: Array<{ name: string }>;
+  success: boolean;
+}
+
+export interface ExerciseCollectionResult {
+  exercises: Exercise[];
+  hasMore: boolean;
+  totalExercises: number;
 }

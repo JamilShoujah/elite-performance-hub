@@ -1,26 +1,36 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
-import { Link } from "react-router-dom";
 
 import { SiteFooter, SiteHeader } from "@/features/site-shell";
+import { Button } from "@/shared/components/ui/Button";
 
-import { exerciseCategoryFilters } from "./types";
 import { ExerciseCard } from "./components/ExerciseCard";
-import { ExerciseCategoryFilters } from "./components/ExerciseCategoryFilters";
 import { ExerciseDetailsModal } from "./components/ExerciseDetailsModal";
 import { ExerciseEmptyState } from "./components/ExerciseEmptyState";
+import { ExerciseFilters } from "./components/ExerciseFilters";
 import { ExerciseSearch } from "./components/ExerciseSearch";
 import { useExerciseLibrary } from "./hooks/useExerciseLibrary";
+import { ALL_EXERCISES_CATEGORY, BODY_WEIGHT_EQUIPMENT } from "./types";
 
 export function ExerciseLibraryPage() {
   const {
-    filteredExercises,
+    categories,
+    error,
+    exercises,
+    hasMore,
+    isLoading,
+    isLoadingMore,
+    loadMoreError,
+    loadMoreExercises,
     resetFilters,
+    retryExercises,
     searchQuery,
     selectedCategory,
+    selectedEquipment,
     selectedExercise,
+    totalExercises,
     setSearchQuery,
     setSelectedCategory,
+    setSelectedEquipment,
     setSelectedExercise,
   } = useExerciseLibrary();
 
@@ -31,19 +41,6 @@ export function ExerciseLibraryPage() {
       <section className="pb-24 pt-32">
         <div className="container mx-auto px-6">
           <motion.div
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
-            <Link
-              to="/"
-              className="mb-8 inline-flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-primary"
-            >
-              <ArrowLeft className="h-4 w-4" />
-              Back to Home
-            </Link>
-          </motion.div>
-
-          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-12 text-center"
@@ -52,8 +49,9 @@ export function ExerciseLibraryPage() {
               Performance Exercise Library
             </h1>
             <p className="mx-auto mt-4 max-w-xl text-muted-foreground">
-              Browse our curated collection of performance-focused exercises.
-              Click any exercise for detailed form tips.
+              Browse live exercise data powered by ExerciseDB. Search by name or
+              filter by body part, then switch to bodyweight-only exercises when
+              you want zero-machinery movements.
             </p>
           </motion.div>
 
@@ -61,25 +59,78 @@ export function ExerciseLibraryPage() {
             value={searchQuery}
             onSearchChange={setSearchQuery}
           />
-          <ExerciseCategoryFilters
-            categories={exerciseCategoryFilters}
+          <ExerciseFilters
+            categories={categories}
+            hasActiveFilters={
+              searchQuery.trim() !== "" ||
+              selectedCategory !== ALL_EXERCISES_CATEGORY ||
+              selectedEquipment !== null
+            }
             onCategoryChange={setSelectedCategory}
+            onReset={resetFilters}
+            onSelectedEquipmentChange={setSelectedEquipment}
             selectedCategory={selectedCategory}
+            selectedEquipment={selectedEquipment}
           />
 
-          {filteredExercises.length > 0 ? (
+          <div className="mb-6 text-center text-sm text-muted-foreground">
+            {isLoading
+              ? "Loading live exercises..."
+              : `Showing ${exercises.length} of ${totalExercises} ${
+                  selectedEquipment === BODY_WEIGHT_EQUIPMENT
+                    ? "bodyweight exercises"
+                    : "exercises"
+                }`}
+          </div>
+
+          {error ? (
+            <ExerciseEmptyState
+              title="Live exercise library unavailable"
+              description={error}
+              actionLabel="Try again"
+              onAction={retryExercises}
+            />
+          ) : isLoading ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredExercises.map((exercise, index) => (
-                <ExerciseCard
-                  key={exercise.name}
-                  exercise={exercise}
-                  index={index}
-                  onSelect={setSelectedExercise}
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div
+                  key={`exercise-skeleton-${index}`}
+                  className="h-[220px] animate-pulse rounded-sm border border-border bg-card/60"
                 />
               ))}
             </div>
+          ) : exercises.length > 0 ? (
+            <>
+              <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                {exercises.map((exercise, index) => (
+                  <ExerciseCard
+                    key={exercise.id}
+                    exercise={exercise}
+                    index={index}
+                    onSelect={setSelectedExercise}
+                  />
+                ))}
+              </div>
+
+              {hasMore ? (
+                <div className="mt-10 flex flex-col items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={loadMoreExercises}
+                    disabled={isLoadingMore}
+                  >
+                    {isLoadingMore ? "Loading more..." : "Load more exercises"}
+                  </Button>
+
+                  {loadMoreError ? (
+                    <p className="text-sm text-destructive">{loadMoreError}</p>
+                  ) : null}
+                </div>
+              ) : null}
+            </>
           ) : (
-            <ExerciseEmptyState onReset={resetFilters} />
+            <ExerciseEmptyState onAction={resetFilters} />
           )}
         </div>
       </section>

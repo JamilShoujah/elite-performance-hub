@@ -1,9 +1,9 @@
-import { useLocation } from "react-router-dom";
-
-import { brand, resolveSectionHref, sectionNavigation, socialLinks } from "../config";
+import { brand, socialLinks } from "../config";
 
 export function SiteFooter() {
-  const { pathname } = useLocation();
+  const footerSocialLinks = socialLinks.filter((socialLink) =>
+    ["Instagram", "WhatsApp"].includes(socialLink.label),
+  );
 
   return (
     <footer className="bg-foreground py-12">
@@ -19,37 +19,18 @@ export function SiteFooter() {
           </div>
 
           <div className="flex items-center gap-4">
-            {socialLinks.map((socialLink) => (
+            {footerSocialLinks.map((socialLink) => (
               <a
                 key={socialLink.label}
                 href={socialLink.href}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={socialLink.label}
-                className="text-secondary-foreground/50 transition-colors hover:text-primary"
+                className="flex h-11 w-11 items-center justify-center rounded-sm border border-secondary-foreground/15 text-secondary-foreground/60 transition-all hover:border-primary/40 hover:text-primary"
               >
                 <socialLink.icon className="h-5 w-5" />
               </a>
             ))}
-          </div>
-
-          <div className="flex items-center gap-6 text-xs text-secondary-foreground/50">
-            {sectionNavigation
-              .filter((item) =>
-                ["programs", "about", "contact"].includes(item.sectionId),
-              )
-              .map((item) => (
-                <a
-                  key={item.sectionId}
-                  href={resolveSectionHref(pathname, item.sectionId)}
-                  className="transition-colors hover:text-primary"
-                >
-                  {item.label}
-                </a>
-              ))}
-            <a href="/exercises" className="transition-colors hover:text-primary">
-              Exercises
-            </a>
           </div>
         </div>
 

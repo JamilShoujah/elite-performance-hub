@@ -13,6 +13,9 @@ export function ExerciseCard({
   index,
   onSelect,
 }: ExerciseCardProps) {
+  const primaryMuscleSummary = exercise.primaryMuscles.slice(0, 2).join(", ");
+  const equipmentSummary = exercise.equipment.slice(0, 2).join(", ");
+
   return (
     <motion.button
       type="button"
@@ -32,10 +35,13 @@ export function ExerciseCard({
       </div>
 
       <p className="mb-2 text-xs font-medium text-primary">
-        {exercise.primaryMuscles}
+        {primaryMuscleSummary}
       </p>
       <p className="text-sm leading-relaxed text-muted-foreground">
-        {exercise.description}
+        Equipment: {equipmentSummary || "Bodyweight"}
+      </p>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+        {exercise.instructions[0]}
       </p>
       <p className="mt-3 text-xs text-primary/70 transition-colors group-hover:text-primary">
         Click for details →
