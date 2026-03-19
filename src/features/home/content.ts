@@ -238,10 +238,3 @@ export const trainingGallery: GalleryImage[] = [
     src: "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?w=600&h=400&fit=crop",
   },
 ];
-
-export const fitnessLevels = [
-  { label: "Beginner", value: "beginner" },
-  { label: "Intermediate", value: "intermediate" },
-  { label: "Advanced", value: "advanced" },
-  { label: "Competitive Athlete", value: "athlete" },
-];

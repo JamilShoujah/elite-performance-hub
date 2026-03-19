@@ -38,9 +38,17 @@ export const sectionNavigation: SectionNavigationItem[] = [
 ];
 
 export const socialLinks: SocialLink[] = [
-  { href: "#", icon: Instagram, label: "Instagram" },
+  {
+    href: "https://www.instagram.com/its_coach_ahmad/",
+    icon: Instagram,
+    label: "Instagram",
+  },
   { href: "#", icon: Facebook, label: "Facebook" },
-  { href: "https://wa.me/1234567890", icon: MessageCircle, label: "WhatsApp" },
+  {
+    href: "https://wa.link/pb8vri",
+    icon: MessageCircle,
+    label: "WhatsApp",
+  },
   { href: "mailto:contact@ahmadsaad.com", icon: Mail, label: "Email" },
 ];
 

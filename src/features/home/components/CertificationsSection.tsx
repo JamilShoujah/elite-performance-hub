@@ -14,15 +14,15 @@ export function CertificationsSection() {
           {certifications.map((certification, index) => (
             <motion.div
               key={certification}
-              className="group rounded-sm border border-border bg-card p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[var(--shadow-card-hover)]"
+              className="group flex h-[180px] items-center justify-center rounded-sm border border-border bg-card p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[var(--shadow-card-hover)]"
               initial={{ opacity: 0, y: 20 }}
               transition={{ delay: index * 0.05 }}
               viewport={{ once: true }}
               whileInView={{ opacity: 1, y: 0 }}
             >
-              <div className="flex items-center gap-3">
-                <Award className="h-5 w-5 shrink-0 text-primary" />
-                <span className="text-sm font-medium text-foreground">
+              <div className="flex flex-col items-center gap-4 text-center">
+                <Award className="h-7 w-7 shrink-0 text-primary" />
+                <span className="text-sm font-medium leading-relaxed text-foreground">
                   {certification}
                 </span>
               </div>
