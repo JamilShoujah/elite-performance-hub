@@ -6,7 +6,7 @@ export function SiteFooter() {
   );
 
   return (
-    <footer className="bg-foreground py-12">
+    <footer className="bg-secondary py-12">
       <div className="container mx-auto px-6">
         <div className="flex flex-col items-center justify-between gap-8 md:flex-row">
           <div>
@@ -23,8 +23,8 @@ export function SiteFooter() {
               <a
                 key={socialLink.label}
                 href={socialLink.href}
-                target="_blank"
-                rel="noopener noreferrer"
+                target={socialLink.label === "WhatsApp" ? undefined : "_blank"}
+                rel={socialLink.label === "WhatsApp" ? undefined : "noopener noreferrer"}
                 aria-label={socialLink.label}
                 className="flex h-11 w-11 items-center justify-center rounded-sm border border-secondary-foreground/15 text-secondary-foreground/60 transition-all hover:border-primary/40 hover:text-primary"
               >

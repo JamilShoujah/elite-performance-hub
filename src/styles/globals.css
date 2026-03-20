@@ -6,42 +6,42 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    --background: 0 0% 7%;
+    --foreground: 0 0% 96.1%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 0%;
+    --card: 0 0% 10.6%;
+    --card-foreground: 0 0% 96.1%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 0%;
+    --popover: 0 0% 10.6%;
+    --popover-foreground: 0 0% 96.1%;
 
-    --primary: 151 100% 50%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 78 99.2% 49.2%;
+    --primary-foreground: 0 0% 7%;
 
-    --secondary: 0 0% 27%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 0 0% 4.7%;
+    --secondary-foreground: 0 0% 96.1%;
 
-    --muted: 0 0% 93%;
-    --muted-foreground: 0 0% 27%;
+    --muted: 0 0% 13.7%;
+    --muted-foreground: 0 0% 68%;
 
-    --accent: 151 100% 50%;
-    --accent-foreground: 0 0% 0%;
+    --accent: 78 99.2% 49.2%;
+    --accent-foreground: 0 0% 7%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 151 100% 50%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 78 99.2% 49.2%;
 
     --radius: 0.5rem;
 
     --font-display: "Space Grotesk", sans-serif;
     --font-body: "Space Grotesk", sans-serif;
 
-    --shadow-card: 0 2px 20px -4px hsla(0, 0%, 0%, 0.06);
-    --shadow-card-hover: 0 8px 30px -4px hsla(0, 0%, 0%, 0.12);
-    --shadow-elevated: 0 20px 60px -10px hsla(0, 0%, 0%, 0.1);
+    --shadow-card: 0 18px 36px -24px hsla(0, 0%, 0%, 0.55);
+    --shadow-card-hover: 0 24px 48px -24px hsla(0, 0%, 0%, 0.68);
+    --shadow-elevated: 0 36px 80px -32px hsla(0, 0%, 0%, 0.78);
   }
 
   * {
@@ -55,6 +55,12 @@
   body {
     @apply min-h-screen bg-background text-foreground antialiased;
     font-family: var(--font-body);
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+    background-image:
+      radial-gradient(circle at top, hsla(78, 99.2%, 49.2%, 0.11), transparent 34%),
+      linear-gradient(180deg, hsla(0, 0%, 100%, 0.02), hsla(0, 0%, 100%, 0));
+    background-attachment: fixed;
   }
 
   h1,
@@ -68,22 +74,19 @@
 
   #root {
     min-height: 100vh;
+    overflow-x: clip;
   }
 }
 
 @layer utilities {
   .text-gradient-green {
     @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(
-      135deg,
-      hsl(151, 100%, 50%),
-      hsl(160, 100%, 40%)
-    );
+    background-image: linear-gradient(135deg, hsl(var(--accent)), hsl(var(--primary)));
   }
 
   .glow-green {
     box-shadow:
-      0 0 20px hsla(151, 100%, 50%, 0.3),
-      0 0 60px hsla(151, 100%, 50%, 0.1);
+      0 0 28px hsla(78, 99.2%, 49.2%, 0.42),
+      0 0 72px hsla(78, 99.2%, 49.2%, 0.22);
   }
 }

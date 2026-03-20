@@ -11,6 +11,13 @@ export default defineConfig(({ mode }) => ({
     hmr: {
       overlay: false,
     },
+    proxy: {
+      "/api/exercisedb": {
+        target: "https://www.exercisedb.dev",
+        changeOrigin: true,
+        rewrite: (requestPath) => requestPath.replace(/^\/api\/exercisedb/, "/api/v1"),
+      },
+    },
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {

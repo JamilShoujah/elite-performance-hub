@@ -7,10 +7,16 @@ import {
 
 function formatLabel(value: string) {
   return value
-    .split(" ")
+    .trim()
+    .replace(/\s*\((male|female)\)\s*$/i, "")
+    .split(/([\s/-]+)/)
     .filter(Boolean)
-    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
-    .join(" ");
+    .map((segment) =>
+      /^[\s/-]+$/.test(segment)
+        ? segment
+        : segment.charAt(0).toUpperCase() + segment.slice(1),
+    )
+    .join("");
 }
 
 function formatLabels(values: string[]) {
@@ -27,7 +33,7 @@ export function mapApiExerciseToExercise(exercise: ExerciseApiItem): Exercise {
     gifUrl: exercise.gifUrl,
     id: exercise.exerciseId,
     instructions: exercise.instructions,
-    name: exercise.name,
+    name: formatLabel(exercise.name),
     primaryMuscles: formatLabels(exercise.targetMuscles),
     secondaryMuscles: formatLabels(exercise.secondaryMuscles),
   };

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -7,14 +7,41 @@ import { cn } from "@/shared/utils/cn";
 import { reviews } from "../content";
 import { SectionHeading } from "./SectionHeading";
 
+const reviewTransition = {
+  duration: 1.35,
+  ease: [0.45, 0, 0.55, 1] as const,
+};
+
+function getWrappedReviewIndex(index: number) {
+  return (index + reviews.length) % reviews.length;
+}
+
+function getReviewDirection(currentIndex: number, nextIndex: number) {
+  const forwardDistance = (nextIndex - currentIndex + reviews.length) % reviews.length;
+  const backwardDistance = (currentIndex - nextIndex + reviews.length) % reviews.length;
+
+  return forwardDistance <= backwardDistance ? 1 : -1;
+}
+
 export function ReviewsSection() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState(1);
+
+  const showReview = (requestedIndex: number) => {
+    const nextIndex = getWrappedReviewIndex(requestedIndex);
+
+    if (nextIndex === activeIndex) {
+      return;
+    }
+
+    setDirection(getReviewDirection(activeIndex, nextIndex));
+    setActiveIndex(nextIndex);
+  };
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      setActiveIndex((currentIndex) =>
-        currentIndex === reviews.length - 1 ? 0 : currentIndex + 1,
-      );
+      setDirection(1);
+      setActiveIndex((currentIndex) => getWrappedReviewIndex(currentIndex + 1));
     }, 5000);
 
     return () => {
@@ -25,15 +52,11 @@ export function ReviewsSection() {
   const activeReview = reviews[activeIndex];
 
   const goToNext = () => {
-    setActiveIndex((currentIndex) =>
-      currentIndex === reviews.length - 1 ? 0 : currentIndex + 1,
-    );
+    showReview(activeIndex + 1);
   };
 
   const goToPrevious = () => {
-    setActiveIndex((currentIndex) =>
-      currentIndex === 0 ? reviews.length - 1 : currentIndex - 1,
-    );
+    showReview(activeIndex - 1);
   };
 
   return (
@@ -46,7 +69,7 @@ export function ReviewsSection() {
             type="button"
             aria-label="Show previous review"
             onClick={goToPrevious}
-            className="absolute left-0 top-1/2 z-10 flex h-10 w-10 -translate-x-4 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-primary/40 md:-translate-x-14"
+            className="absolute left-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-primary/40 md:left-0 md:-translate-x-14"
           >
             <ChevronLeft className="h-5 w-5 text-foreground" />
           </button>
@@ -55,35 +78,54 @@ export function ReviewsSection() {
             type="button"
             aria-label="Show next review"
             onClick={goToNext}
-            className="absolute right-0 top-1/2 z-10 flex h-10 w-10 translate-x-4 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-primary/40 md:translate-x-14"
+            className="absolute right-3 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-border bg-card transition-colors hover:border-primary/40 md:right-0 md:translate-x-14"
           >
             <ChevronRight className="h-5 w-5 text-foreground" />
           </button>
 
-          <motion.div
-            key={activeReview.name}
-            className="rounded-sm border border-border bg-card p-8 text-center md:p-12"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-          >
-            <div className="mb-6 flex justify-center gap-1">
-              {Array.from({ length: activeReview.rating }).map((_, starIndex) => (
-                <Star
-                  key={`${activeReview.name}-${starIndex}`}
-                  className="h-5 w-5 fill-primary text-primary"
-                />
-              ))}
-            </div>
+          <div className="relative min-h-[320px] sm:min-h-[280px]">
+            <AnimatePresence initial={false} mode="sync" custom={direction}>
+              <motion.div
+                key={`${activeReview.name}-${activeIndex}`}
+                custom={direction}
+                className="absolute inset-0 rounded-sm border border-border bg-card p-8 text-center md:p-12"
+                initial={(currentDirection) => ({
+                  opacity: 0,
+                  x: currentDirection > 0 ? 16 : -16,
+                  scale: 0.996,
+                })}
+                animate={{
+                  opacity: 1,
+                  x: 0,
+                  scale: 1,
+                  transition: reviewTransition,
+                }}
+                exit={(currentDirection) => ({
+                  opacity: 0,
+                  x: currentDirection > 0 ? -16 : 16,
+                  scale: 0.996,
+                  transition: reviewTransition,
+                })}
+              >
+                <div className="mb-6 flex justify-center gap-1">
+                  {Array.from({ length: activeReview.rating }).map((_, starIndex) => (
+                    <Star
+                      key={`${activeReview.name}-${starIndex}`}
+                      className="h-5 w-5 fill-primary text-primary"
+                    />
+                  ))}
+                </div>
 
-            <blockquote className="text-lg font-light italic leading-relaxed text-foreground md:text-xl">
-              "{activeReview.text}"
-            </blockquote>
+                <blockquote className="text-lg font-light italic leading-relaxed text-foreground md:text-xl">
+                  "{activeReview.text}"
+                </blockquote>
 
-            <p className="mt-6 font-display font-semibold text-foreground">
-              {activeReview.name}
-            </p>
-          </motion.div>
+                <p className="mt-6 font-display font-semibold text-foreground">
+                  {activeReview.name}
+                </p>
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
           <div className="mt-8 flex justify-center gap-2">
             {reviews.map((review, index) => (
@@ -91,7 +133,7 @@ export function ReviewsSection() {
                 key={review.name}
                 type="button"
                 aria-label={`Show review ${index + 1}`}
-                onClick={() => setActiveIndex(index)}
+                onClick={() => showReview(index)}
                 className={cn(
                   "h-2.5 w-2.5 rounded-full transition-all",
                   index === activeIndex

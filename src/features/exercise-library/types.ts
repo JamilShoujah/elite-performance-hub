@@ -44,6 +44,11 @@ export interface ExerciseApiListResponse {
   success: boolean;
 }
 
+export interface ExerciseApiDetailResponse {
+  data: ExerciseApiItem;
+  success: boolean;
+}
+
 export interface ExerciseTaxonomyResponse {
   data: Array<{ name: string }>;
   success: boolean;

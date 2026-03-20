@@ -1,4 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { SiteFooter, SiteHeader } from "@/features/site-shell";
 import { Button } from "@/shared/components/ui/Button";
@@ -9,15 +11,26 @@ import { ExerciseEmptyState } from "./components/ExerciseEmptyState";
 import { ExerciseFilters } from "./components/ExerciseFilters";
 import { ExerciseSearch } from "./components/ExerciseSearch";
 import { useExerciseLibrary } from "./hooks/useExerciseLibrary";
-import { ALL_EXERCISES_CATEGORY, BODY_WEIGHT_EQUIPMENT } from "./types";
+import {
+  ALL_EXERCISES_CATEGORY,
+  BODY_WEIGHT_EQUIPMENT,
+  type Exercise,
+} from "./types";
 
 export function ExerciseLibraryPage() {
+  const navigate = useNavigate();
+  const [opensDetailsAsPage, setOpensDetailsAsPage] = useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia("(max-width: 767px)").matches
+      : false,
+  );
   const {
     categories,
     error,
     exercises,
     hasMore,
     isLoading,
+    isRefreshing,
     isLoadingMore,
     loadMoreError,
     loadMoreExercises,
@@ -33,6 +46,45 @@ export function ExerciseLibraryPage() {
     setSelectedEquipment,
     setSelectedExercise,
   } = useExerciseLibrary();
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return undefined;
+    }
+
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const syncDetailsViewMode = (event: MediaQueryList | MediaQueryListEvent) => {
+      setOpensDetailsAsPage(event.matches);
+    };
+
+    syncDetailsViewMode(mediaQuery);
+
+    mediaQuery.addEventListener("change", syncDetailsViewMode);
+
+    return () => {
+      mediaQuery.removeEventListener("change", syncDetailsViewMode);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!opensDetailsAsPage || !selectedExercise) {
+      return;
+    }
+
+    navigate(`/exercises/${selectedExercise.id}`, {
+      state: { exercise: selectedExercise },
+    });
+    setSelectedExercise(null);
+  }, [navigate, opensDetailsAsPage, selectedExercise, setSelectedExercise]);
+
+  const handleSelectExercise = (exercise: Exercise) => {
+    if (opensDetailsAsPage) {
+      navigate(`/exercises/${exercise.id}`, { state: { exercise } });
+      return;
+    }
+
+    setSelectedExercise(exercise);
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -74,8 +126,10 @@ export function ExerciseLibraryPage() {
           />
 
           <div className="mb-6 text-center text-sm text-muted-foreground">
-            {isLoading
+            {isLoading && exercises.length === 0
               ? "Loading live exercises..."
+              : isRefreshing
+                ? "Updating live exercises..."
               : `Showing ${exercises.length} of ${totalExercises} ${
                   selectedEquipment === BODY_WEIGHT_EQUIPMENT
                     ? "bodyweight exercises"
@@ -83,14 +137,18 @@ export function ExerciseLibraryPage() {
                 }`}
           </div>
 
-          {error ? (
+          {error && exercises.length > 0 ? (
+            <p className="mb-6 text-center text-sm text-destructive">{error}</p>
+          ) : null}
+
+          {error && exercises.length === 0 ? (
             <ExerciseEmptyState
               title="Live exercise library unavailable"
               description={error}
               actionLabel="Try again"
               onAction={retryExercises}
             />
-          ) : isLoading ? (
+          ) : isLoading && exercises.length === 0 ? (
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {Array.from({ length: 6 }).map((_, index) => (
                 <div
@@ -107,7 +165,7 @@ export function ExerciseLibraryPage() {
                     key={exercise.id}
                     exercise={exercise}
                     index={index}
-                    onSelect={setSelectedExercise}
+                    onSelect={handleSelectExercise}
                   />
                 ))}
               </div>
@@ -136,7 +194,7 @@ export function ExerciseLibraryPage() {
       </section>
 
       <AnimatePresence>
-        {selectedExercise ? (
+        {selectedExercise && !opensDetailsAsPage ? (
           <ExerciseDetailsModal
             exercise={selectedExercise}
             onClose={() => setSelectedExercise(null)}

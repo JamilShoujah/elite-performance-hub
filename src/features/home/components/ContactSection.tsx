@@ -38,7 +38,7 @@ export function ContactSection() {
 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               <Button asChild size="lg" className="glow-green w-full">
-                <a href={whatsappLink} target="_blank" rel="noopener noreferrer">
+                <a href={whatsappLink} rel="noopener noreferrer">
                   <MessageCircle className="h-4 w-4" />
                   Message on WhatsApp
                 </a>

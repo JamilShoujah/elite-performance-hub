@@ -11,6 +11,7 @@ export type HomeSectionId =
   | "specializations"
   | "about"
   | "reviews"
+  | "certifications"
   | "contact";
 
 export interface SectionNavigationItem {
@@ -34,6 +35,7 @@ export const sectionNavigation: SectionNavigationItem[] = [
   { label: "Specializations", sectionId: "specializations" },
   { label: "About", sectionId: "about" },
   { label: "Reviews", sectionId: "reviews" },
+  { label: "Certifications", sectionId: "certifications" },
   { label: "Contact", sectionId: "contact" },
 ];
 

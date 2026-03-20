@@ -68,7 +68,7 @@ export function ExerciseFilters({
               id="exercise-body-part-filter"
               value={selectedCategory}
               onChange={(event) => onCategoryChange(event.target.value)}
-              className="w-full rounded-sm border border-border bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
+              className="w-full rounded-sm border border-border bg-background px-4 py-3 text-base text-foreground outline-none transition-colors focus:border-primary md:text-sm"
             >
               {categories.map((category) => (
                 <option key={category.value} value={category.value}>

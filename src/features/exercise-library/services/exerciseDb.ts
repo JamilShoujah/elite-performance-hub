@@ -3,12 +3,20 @@ import {
   ALL_EXERCISES_CATEGORY,
   EXERCISE_PAGE_SIZE,
   type ExerciseCollectionResult,
+  type Exercise,
+  type ExerciseApiDetailResponse,
   type ExerciseApiListResponse,
   type ExerciseCategoryOption,
   type ExerciseTaxonomyResponse,
 } from "../types";
 
-const EXERCISE_DB_BASE_URL = "https://www.exercisedb.dev/api/v1";
+const EXERCISE_DB_BASE_URL =
+  typeof window === "undefined"
+    ? "https://example.com/api/exercisedb/"
+    : new URL("/api/exercisedb/", window.location.origin).toString();
+const exerciseCategoriesCache = new Map<string, ExerciseCategoryOption[]>();
+const exercisesCache = new Map<string, ExerciseCollectionResult>();
+const exerciseDetailsCache = new Map<string, Exercise>();
 
 interface FetchExercisesOptions {
   category: string;
@@ -99,14 +107,24 @@ async function parseJsonResponse<T>(response: Response): Promise<T> {
 export async function fetchExerciseCategories(
   signal?: AbortSignal,
 ): Promise<ExerciseCategoryOption[]> {
-  const response = await fetch(createApiUrl("bodyparts"), { signal });
+  const requestUrl = createApiUrl("bodyparts");
+  const cacheKey = requestUrl.toString();
+  const cachedCategories = exerciseCategoriesCache.get(cacheKey);
+
+  if (cachedCategories) {
+    return cachedCategories;
+  }
+
+  const response = await fetch(requestUrl, { signal });
   const payload = await parseJsonResponse<ExerciseTaxonomyResponse>(response);
 
   if (!payload.success) {
     throw new Error("ExerciseDB categories request was not successful.");
   }
 
-  return mapCategoryOptions(payload.data.map((bodyPart) => bodyPart.name));
+  const categories = mapCategoryOptions(payload.data.map((bodyPart) => bodyPart.name));
+  exerciseCategoriesCache.set(cacheKey, categories);
+  return categories;
 }
 
 export async function fetchExercises({
@@ -117,19 +135,63 @@ export async function fetchExercises({
   searchQuery = "",
   signal,
 }: FetchExercisesOptions): Promise<ExerciseCollectionResult> {
-  const response = await fetch(
-    buildExercisesUrl({ category, equipment, limit, offset, searchQuery }),
-    { signal },
-  );
+  const requestUrl = buildExercisesUrl({
+    category,
+    equipment,
+    limit,
+    offset,
+    searchQuery,
+  });
+  const cacheKey = requestUrl.toString();
+  const cachedExercises = exercisesCache.get(cacheKey);
+
+  if (cachedExercises) {
+    return cachedExercises;
+  }
+
+  const response = await fetch(requestUrl, { signal });
   const payload = await parseJsonResponse<ExerciseApiListResponse>(response);
 
   if (!payload.success) {
     throw new Error("ExerciseDB exercises request was not successful.");
   }
 
-  return {
+  const result = {
     exercises: payload.data.map(mapApiExerciseToExercise),
     hasMore: Boolean(payload.metadata?.nextPage),
     totalExercises: payload.metadata?.totalExercises ?? payload.data.length,
   };
+
+  exercisesCache.set(cacheKey, result);
+  return result;
+}
+
+export async function fetchExerciseById(
+  exerciseId: string,
+  signal?: AbortSignal,
+): Promise<Exercise> {
+  const trimmedExerciseId = exerciseId.trim();
+
+  if (!trimmedExerciseId) {
+    throw new Error("Exercise id is required.");
+  }
+
+  const requestUrl = createApiUrl(`exercises/${encodeURIComponent(trimmedExerciseId)}`);
+  const cacheKey = requestUrl.toString();
+  const cachedExercise = exerciseDetailsCache.get(cacheKey);
+
+  if (cachedExercise) {
+    return cachedExercise;
+  }
+
+  const response = await fetch(requestUrl, { signal });
+  const payload = await parseJsonResponse<ExerciseApiDetailResponse>(response);
+
+  if (!payload.success) {
+    throw new Error("ExerciseDB exercise details request was not successful.");
+  }
+
+  const exercise = mapApiExerciseToExercise(payload.data);
+  exerciseDetailsCache.set(cacheKey, exercise);
+  return exercise;
 }
