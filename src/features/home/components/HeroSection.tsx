@@ -14,7 +14,7 @@ export function HeroSection() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${heroBackground})` }}
       />
-      <div className="absolute inset-0 bg-foreground/75" />
+      <div className="absolute inset-0 bg-secondary/80" />
 
       <div className="relative z-10 container mx-auto px-6 text-center">
         <motion.div

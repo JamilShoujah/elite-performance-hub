@@ -5,12 +5,22 @@ import { Link, useLocation } from "react-router-dom";
 
 import { cn } from "@/shared/utils/cn";
 
-import { brand, resolveHomeHref, resolveSectionHref, sectionNavigation } from "../config";
+import {
+  brand,
+  resolveHomeHref,
+  resolveSectionHref,
+  sectionNavigation,
+  type HomeSectionId,
+} from "../config";
 
 export function SiteHeader() {
   const { pathname } = useLocation();
+  const isExerciseLibraryRoute = pathname.startsWith("/exercises");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeSectionId, setActiveSectionId] = useState<HomeSectionId | null>(
+    null,
+  );
 
   useEffect(() => {
     const syncScrollState = () => {
@@ -24,6 +34,73 @@ export function SiteHeader() {
       window.removeEventListener("scroll", syncScrollState);
     };
   }, []);
+
+  useEffect(() => {
+    if (pathname !== "/") {
+      setActiveSectionId(null);
+      return;
+    }
+
+    const resolveActiveSection = () => {
+      const activationLine = window.innerHeight * 0.32;
+      let nextActiveSectionId: HomeSectionId | null = null;
+
+      for (const item of sectionNavigation) {
+        const sectionElement = document.getElementById(item.sectionId);
+
+        if (!sectionElement) {
+          continue;
+        }
+
+        const sectionBounds = sectionElement.getBoundingClientRect();
+
+        if (
+          sectionBounds.top <= activationLine &&
+          sectionBounds.bottom >= activationLine
+        ) {
+          nextActiveSectionId = item.sectionId;
+          break;
+        }
+
+        if (sectionBounds.top <= activationLine) {
+          nextActiveSectionId = item.sectionId;
+        }
+      }
+
+      if (window.scrollY < 120) {
+        nextActiveSectionId = null;
+      }
+
+      setActiveSectionId(nextActiveSectionId);
+    };
+
+    let animationFrameId = 0;
+    const scheduleActiveSectionSync = () => {
+      if (animationFrameId !== 0) {
+        return;
+      }
+
+      animationFrameId = window.requestAnimationFrame(() => {
+        animationFrameId = 0;
+        resolveActiveSection();
+      });
+    };
+
+    resolveActiveSection();
+    window.addEventListener("scroll", scheduleActiveSectionSync, {
+      passive: true,
+    });
+    window.addEventListener("resize", scheduleActiveSectionSync);
+
+    return () => {
+      if (animationFrameId !== 0) {
+        window.cancelAnimationFrame(animationFrameId);
+      }
+
+      window.removeEventListener("scroll", scheduleActiveSectionSync);
+      window.removeEventListener("resize", scheduleActiveSectionSync);
+    };
+  }, [pathname]);
 
   useEffect(() => {
     setIsMenuOpen(false);
@@ -44,14 +121,19 @@ export function SiteHeader() {
   }, []);
 
   const isOverlayHeader = pathname === "/" && !isScrolled && !isMenuOpen;
-  const linkClassName = cn(
-    "text-sm font-medium transition-colors",
-    isOverlayHeader
-      ? "text-white/70 hover:text-white"
-      : "text-muted-foreground hover:text-foreground",
-  );
   const mobileLinkClassName =
     "text-sm font-medium text-foreground transition-colors hover:text-primary";
+  const getDesktopLinkClassName = (isActive: boolean) =>
+    cn(
+      "text-sm transition-colors",
+      isOverlayHeader
+        ? isActive
+          ? "font-bold text-secondary-foreground"
+          : "font-medium text-secondary-foreground/70 hover:text-primary"
+        : isActive
+          ? "font-bold text-foreground"
+          : "font-medium text-muted-foreground hover:text-primary",
+    );
 
   return (
     <motion.nav
@@ -71,7 +153,7 @@ export function SiteHeader() {
             href={resolveHomeHref(pathname)}
             className={cn(
               "font-display text-xl font-bold tracking-tight transition-colors",
-              isOverlayHeader ? "text-white" : "text-foreground",
+              isOverlayHeader ? "text-secondary-foreground" : "text-foreground",
             )}
             onClick={() => setIsMenuOpen(false)}
           >
@@ -85,13 +167,18 @@ export function SiteHeader() {
               <a
                 key={item.sectionId}
                 href={resolveSectionHref(pathname, item.sectionId)}
-                className={linkClassName}
+                className={getDesktopLinkClassName(
+                  pathname === "/" && activeSectionId === item.sectionId,
+                )}
               >
                 {item.label}
               </a>
             ))}
 
-            <Link to="/exercises" className={linkClassName}>
+            <Link
+              to="/exercises"
+              className={getDesktopLinkClassName(isExerciseLibraryRoute)}
+            >
               Exercise Library
             </Link>
           </div>
@@ -105,7 +192,7 @@ export function SiteHeader() {
             className={cn(
               "flex h-10 w-10 items-center justify-center rounded-sm transition-colors md:hidden",
               isOverlayHeader
-                ? "text-white hover:bg-white/10"
+                ? "text-secondary-foreground hover:bg-secondary-foreground/10"
                 : "text-foreground hover:bg-muted",
             )}
           >

@@ -1,7 +1,10 @@
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 
-import { ExerciseLibraryPage } from "@/features/exercise-library";
+import {
+  ExerciseDetailsPage,
+  ExerciseLibraryPage,
+} from "@/features/exercise-library";
 import { HomePage } from "@/features/home";
 import { NotFoundPage } from "@/features/not-found";
 
@@ -22,6 +25,7 @@ export function AppRouter() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/exercises" element={<ExerciseLibraryPage />} />
+        <Route path="/exercises/:exerciseId" element={<ExerciseDetailsPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

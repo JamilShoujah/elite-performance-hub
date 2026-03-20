@@ -10,7 +10,7 @@ describe("mapApiExerciseToExercise", () => {
       exerciseId: "abc123",
       gifUrl: "https://cdn.example.com/exercise.gif",
       instructions: ["Step one", "Step two"],
-      name: "chin-up",
+      name: "arms apart circular toe touch (male)",
       secondaryMuscles: ["biceps brachii"],
       targetMuscles: ["latissimus dorsi"],
     });
@@ -22,10 +22,25 @@ describe("mapApiExerciseToExercise", () => {
       gifUrl: "https://cdn.example.com/exercise.gif",
       id: "abc123",
       instructions: ["Step one", "Step two"],
-      name: "chin-up",
+      name: "Arms Apart Circular Toe Touch",
       primaryMuscles: ["Latissimus Dorsi"],
       secondaryMuscles: ["Biceps Brachii"],
     });
+  });
+
+  it("title-cases hyphenated exercise names", () => {
+    const exercise = mapApiExerciseToExercise({
+      bodyParts: ["upper arms"],
+      equipments: ["body weight"],
+      exerciseId: "abc123",
+      gifUrl: "https://cdn.example.com/exercise.gif",
+      instructions: ["Step one", "Step two"],
+      name: "chin-up",
+      secondaryMuscles: ["biceps brachii"],
+      targetMuscles: ["latissimus dorsi"],
+    });
+
+    expect(exercise.name).toBe("Chin-Up");
   });
 });
 

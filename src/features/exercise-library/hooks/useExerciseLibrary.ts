@@ -2,6 +2,7 @@ import {
   startTransition,
   useDeferredValue,
   useEffect,
+  useRef,
   useState,
 } from "react";
 
@@ -12,6 +13,8 @@ import {
   type Exercise,
   type ExerciseCategoryOption,
 } from "../types";
+
+const FILTER_REQUEST_DEBOUNCE_MS = 200;
 
 export function useExerciseLibrary() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,10 +34,17 @@ export function useExerciseLibrary() {
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [loadMoreError, setLoadMoreError] = useState<string | null>(null);
   const [requestVersion, setRequestVersion] = useState(0);
   const [totalExercises, setTotalExercises] = useState(0);
+  const latestRequestIdRef = useRef(0);
+  const hasVisibleExercisesRef = useRef(false);
+
+  useEffect(() => {
+    hasVisibleExercisesRef.current = exercises.length > 0;
+  }, [exercises.length]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -56,46 +66,75 @@ export function useExerciseLibrary() {
 
   useEffect(() => {
     const controller = new AbortController();
+    const currentRequestId = latestRequestIdRef.current + 1;
+    latestRequestIdRef.current = currentRequestId;
 
-    setSelectedExercise(null);
-    setError(null);
-    setLoadMoreError(null);
-    setIsLoading(true);
+    const timeoutId = window.setTimeout(() => {
+      setSelectedExercise(null);
+      setError(null);
+      setLoadMoreError(null);
 
-    void fetchExercises({
-      category: selectedCategory,
-      equipment: selectedEquipment,
-      limit: EXERCISE_PAGE_SIZE,
-      offset: 0,
-      searchQuery: deferredSearchQuery,
-      signal: controller.signal,
-    })
-      .then((result) => {
-        startTransition(() => {
-          setExercises(result.exercises);
-          setHasMore(result.hasMore);
-          setTotalExercises(result.totalExercises);
+      if (hasVisibleExercisesRef.current) {
+        setIsRefreshing(true);
+      } else {
+        setIsLoading(true);
+      }
+
+      void fetchExercises({
+        category: selectedCategory,
+        equipment: selectedEquipment,
+        limit: EXERCISE_PAGE_SIZE,
+        offset: 0,
+        searchQuery: deferredSearchQuery,
+        signal: controller.signal,
+      })
+        .then((result) => {
+          if (
+            controller.signal.aborted ||
+            currentRequestId !== latestRequestIdRef.current
+          ) {
+            return;
+          }
+
+          startTransition(() => {
+            setExercises(result.exercises);
+            setHasMore(result.hasMore);
+            setTotalExercises(result.totalExercises);
+          });
+        })
+        .catch((fetchError) => {
+          if (
+            (fetchError as DOMException).name === "AbortError" ||
+            currentRequestId !== latestRequestIdRef.current
+          ) {
+            return;
+          }
+
+          if (!hasVisibleExercisesRef.current) {
+            setExercises([]);
+            setHasMore(false);
+            setTotalExercises(0);
+          }
+
+          setError(
+            "We couldn't refresh the live exercise library right now. Please try again.",
+          );
+        })
+        .finally(() => {
+          if (
+            !controller.signal.aborted &&
+            currentRequestId === latestRequestIdRef.current
+          ) {
+            setIsLoading(false);
+            setIsRefreshing(false);
+          }
         });
-      })
-      .catch((fetchError) => {
-        if ((fetchError as DOMException).name === "AbortError") {
-          return;
-        }
+    }, FILTER_REQUEST_DEBOUNCE_MS);
 
-        setExercises([]);
-        setHasMore(false);
-        setTotalExercises(0);
-        setError(
-          "We couldn't load the live exercise library right now. Please try again.",
-        );
-      })
-      .finally(() => {
-        if (!controller.signal.aborted) {
-          setIsLoading(false);
-        }
-      });
-
-    return () => controller.abort();
+    return () => {
+      window.clearTimeout(timeoutId);
+      controller.abort();
+    };
   }, [deferredSearchQuery, requestVersion, selectedCategory, selectedEquipment]);
 
   const loadMoreExercises = async () => {
@@ -154,6 +193,7 @@ export function useExerciseLibrary() {
     exercises,
     hasMore,
     isLoading,
+    isRefreshing,
     isLoadingMore,
     loadMoreError,
     loadMoreExercises,
